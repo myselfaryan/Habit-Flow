@@ -2,8 +2,6 @@
 
 A comprehensive habit and task tracking application that helps you build consistency and achieve your goals through beautiful analytics and intuitive design.
 
-![HabitFlow Screenshot](public/image.png)
-
 ## ✨ Features
 
 ### 🎯 Smart Habit Tracking
