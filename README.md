@@ -1,4 +1,4 @@
-# RoutineSync
+# HabitFlow
 
 A comprehensive habit and task tracking application that helps you build consistency and achieve your goals through beautiful analytics and intuitive design.
 
@@ -34,7 +34,6 @@ A comprehensive habit and task tracking application that helps you build consist
 - **Backend**: Supabase (PostgreSQL, Auth, Real-time)
 - **Animations**: Framer Motion
 - **Charts**: Recharts
-- **3D Graphics**: Three.js, React Three Fiber
 - **Build Tool**: Vite
 - **Deployment**: Netlify
 
@@ -42,8 +41,8 @@ A comprehensive habit and task tracking application that helps you build consist
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/routinesync.git
-   cd routinesync
+   git clone https://github.com/yourusername/habitflow.git
+   cd habitflow
    ```
 
 2. **Install dependencies**
@@ -80,7 +79,6 @@ src/
 │   ├── auth/           # Authentication components
 │   ├── habits/         # Habit-related components
 │   ├── tasks/          # Task-related components
-│   ├── landing/        # Landing page components
 │   ├── layout/         # Layout components
 │   └── ui/             # Base UI components
 ├── contexts/           # React contexts
@@ -136,7 +134,7 @@ All tables include Row Level Security (RLS) for data protection.
 
 ## 🎨 Design Philosophy
 
-RoutineSync follows modern design principles:
+HabitFlow follows modern design principles:
 
 - **Minimalist Interface**: Clean, distraction-free design
 - **Consistent Patterns**: Unified component library
@@ -188,7 +186,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you have any questions or need help, please:
 
-1. Check the [Issues](https://github.com/yourusername/routinesync/issues) page
+1. Check the [Issues](https://github.com/yourusername/habitflow/issues) page
 2. Create a new issue if your problem isn't already reported
 3. Provide detailed information about your environment and the issue
 

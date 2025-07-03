@@ -78,7 +78,7 @@ const Landing: React.FC = () => {
               <Target className="w-6 h-6 text-white" />
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              RoutineSync
+              HabitFlow
             </span>
           </div>
           <button
@@ -226,7 +226,7 @@ const Landing: React.FC = () => {
               <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
                 <Target className="w-6 h-6 text-white" />
               </div>
-              <span className="text-xl font-bold">RoutineSync</span>
+              <span className="text-xl font-bold">HabitFlow</span>
             </div>
             
             <div className="flex items-center space-x-6">
@@ -245,7 +245,7 @@ const Landing: React.FC = () => {
           </div>
           
           <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
-            <p>&copy; 2024 RoutineSync. Built with ❤️ for productivity enthusiasts.</p>
+            <p>&copy; 2024 HabitFlow. Built with ❤️ for productivity enthusiasts.</p>
           </div>
         </div>
       </footer>
