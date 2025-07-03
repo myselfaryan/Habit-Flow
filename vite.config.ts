@@ -16,8 +16,7 @@ export default defineConfig({
           router: ['react-router-dom'],
           ui: ['framer-motion', 'lucide-react'],
           charts: ['recharts'],
-          three: ['three', '@react-three/fiber', '@react-three/drei'],
-          utils: ['date-fns', 'gsap']
+          utils: ['date-fns']
         }
       }
     }
