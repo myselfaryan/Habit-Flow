@@ -4,20 +4,45 @@ import { Database } from './database.types';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+// Create a fallback client if environment variables are missing
+let supabase: any;
+
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
+  console.warn('Missing Supabase environment variables. Using fallback configuration.');
+  // Create a mock client that won't break the app
+  supabase = {
+    auth: {
+      getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+      signUp: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+      signInWithPassword: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+      signOut: () => Promise.resolve({ error: null }),
+      getUser: () => Promise.resolve({ data: { user: null }, error: null }),
+    },
+    from: () => ({
+      select: () => ({ eq: () => ({ order: () => Promise.resolve({ data: [], error: null }) }) }),
+      insert: () => ({ select: () => ({ single: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }) }) }),
+      update: () => ({ eq: () => ({ select: () => ({ single: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }) }) }) }),
+      delete: () => ({ eq: () => Promise.resolve({ error: null }) }),
+    }),
+  };
+} else {
+  supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true
+    }
+  });
 }
 
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true
-  }
-});
+export { supabase };
 
 // Auth helpers
 export const signUp = async (email: string, password: string) => {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return { data: null, error: new Error('Supabase configuration missing. Please set up your environment variables.') };
+  }
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -26,6 +51,9 @@ export const signUp = async (email: string, password: string) => {
 };
 
 export const signIn = async (email: string, password: string) => {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return { data: null, error: new Error('Supabase configuration missing. Please set up your environment variables.') };
+  }
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,

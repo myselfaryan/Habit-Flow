@@ -55,13 +55,19 @@ export const useSupabaseData = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Check if Supabase is properly configured
+  const isSupabaseConfigured = !!(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY);
+
   // Fetch all data
   const fetchData = async () => {
-    if (!user) {
+    if (!user || !isSupabaseConfigured) {
       setHabits([]);
       setTasks([]);
       setHabitEntries([]);
       setLoading(false);
+      if (!isSupabaseConfigured) {
+        setError('Supabase configuration missing');
+      }
       return;
     }
 
@@ -115,11 +121,13 @@ export const useSupabaseData = () => {
   // Fetch data when user changes
   useEffect(() => {
     fetchData();
-  }, [user]);
+  }, [user, isSupabaseConfigured]);
 
   // CRUD operations for habits
   const addHabit = async (habit: Omit<Habit, 'id' | 'createdAt'>) => {
-    if (!user) return null;
+    if (!user || !isSupabaseConfigured) {
+      throw new Error('Authentication or configuration required');
+    }
 
     try {
       const { data, error } = await supabase
@@ -149,7 +157,9 @@ export const useSupabaseData = () => {
   };
 
   const updateHabit = async (id: string, updates: Partial<Habit>) => {
-    if (!user) return null;
+    if (!user || !isSupabaseConfigured) {
+      throw new Error('Authentication or configuration required');
+    }
 
     try {
       const { data, error } = await supabase
@@ -180,7 +190,9 @@ export const useSupabaseData = () => {
   };
 
   const deleteHabit = async (id: string) => {
-    if (!user) return;
+    if (!user || !isSupabaseConfigured) {
+      throw new Error('Authentication or configuration required');
+    }
 
     try {
       const { error } = await supabase
@@ -200,7 +212,9 @@ export const useSupabaseData = () => {
 
   // CRUD operations for tasks
   const addTask = async (task: Omit<Task, 'id' | 'createdAt'>) => {
-    if (!user) return null;
+    if (!user || !isSupabaseConfigured) {
+      throw new Error('Authentication or configuration required');
+    }
 
     try {
       const { data, error } = await supabase
@@ -230,7 +244,9 @@ export const useSupabaseData = () => {
   };
 
   const updateTask = async (id: string, updates: Partial<Task>) => {
-    if (!user) return null;
+    if (!user || !isSupabaseConfigured) {
+      throw new Error('Authentication or configuration required');
+    }
 
     try {
       const { data, error } = await supabase
@@ -274,7 +290,9 @@ export const useSupabaseData = () => {
   };
 
   const deleteTask = async (id: string) => {
-    if (!user) return;
+    if (!user || !isSupabaseConfigured) {
+      throw new Error('Authentication or configuration required');
+    }
 
     try {
       const { error } = await supabase
@@ -294,7 +312,9 @@ export const useSupabaseData = () => {
 
   // CRUD operations for habit entries
   const addHabitEntry = async (entry: Omit<HabitEntry, 'id'>) => {
-    if (!user) return null;
+    if (!user || !isSupabaseConfigured) {
+      throw new Error('Authentication or configuration required');
+    }
 
     try {
       const { data, error } = await supabase
@@ -334,6 +354,7 @@ export const useSupabaseData = () => {
     loading,
     error,
     isAuthenticated,
+    isSupabaseConfigured,
 
     // Actions
     fetchData,

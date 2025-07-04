@@ -16,6 +16,10 @@ function App() {
   // Add error logging for debugging
   React.useEffect(() => {
     console.log('App component mounted');
+    console.log('Environment check:', {
+      supabaseUrl: !!import.meta.env.VITE_SUPABASE_URL,
+      supabaseKey: !!import.meta.env.VITE_SUPABASE_ANON_KEY,
+    });
     
     // Log any unhandled errors
     const handleError = (event: ErrorEvent) => {

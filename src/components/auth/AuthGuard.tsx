@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useAuthContext } from '../../contexts/AuthContext';
-import { useSupabaseData } from '../../hooks/useSupabaseData';
 import AuthModal from './AuthModal';
-import { Loader2, Target } from 'lucide-react';
+import { Loader2, Target, AlertCircle } from 'lucide-react';
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -12,6 +11,9 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const { isAuthenticated, loading: authLoading } = useAuthContext();
   const [showAuthModal, setShowAuthModal] = useState(false);
 
+  // Check if Supabase is configured
+  const isSupabaseConfigured = !!(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY);
+
   // Show loading spinner while checking auth
   if (authLoading) {
     return (
@@ -19,6 +21,32 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show configuration error if Supabase is not configured
+  if (!isSupabaseConfigured) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto px-6">
+          <div className="w-20 h-20 bg-gradient-to-br from-red-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-2xl">
+            <AlertCircle className="w-10 h-10 text-white" />
+          </div>
+          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-gray-900 via-red-900 to-orange-900 dark:from-white dark:via-red-200 dark:to-orange-200 bg-clip-text text-transparent">
+            Configuration Required
+          </h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
+            HabitFlow requires Supabase configuration to function properly. Please set up your environment variables.
+          </p>
+          <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 text-left text-sm">
+            <p className="font-medium mb-2">Required environment variables:</p>
+            <ul className="space-y-1 text-gray-600 dark:text-gray-400">
+              <li>• VITE_SUPABASE_URL</li>
+              <li>• VITE_SUPABASE_ANON_KEY</li>
+            </ul>
+          </div>
         </div>
       </div>
     );
