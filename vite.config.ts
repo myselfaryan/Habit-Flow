@@ -9,6 +9,7 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: false,
+    minify: 'terser',
     rollupOptions: {
       output: {
         manualChunks: {
@@ -32,5 +33,8 @@ export default defineConfig({
   preview: {
     port: 4173,
     host: true
+  },
+  define: {
+    'process.env': {}
   }
 });

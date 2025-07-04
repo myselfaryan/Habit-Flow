@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -13,6 +13,28 @@ import Settings from './pages/Settings';
 import AuthGuard from './components/auth/AuthGuard';
 
 function App() {
+  // Add error logging for debugging
+  React.useEffect(() => {
+    console.log('App component mounted');
+    
+    // Log any unhandled errors
+    const handleError = (event: ErrorEvent) => {
+      console.error('Unhandled error:', event.error);
+    };
+    
+    const handleRejection = (event: PromiseRejectionEvent) => {
+      console.error('Unhandled promise rejection:', event.reason);
+    };
+    
+    window.addEventListener('error', handleError);
+    window.addEventListener('unhandledrejection', handleRejection);
+    
+    return () => {
+      window.removeEventListener('error', handleError);
+      window.removeEventListener('unhandledrejection', handleRejection);
+    };
+  }, []);
+
   return (
     <ThemeProvider>
       <AuthProvider>
