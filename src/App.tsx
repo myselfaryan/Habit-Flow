@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { AppProvider } from './contexts/AppContext';
 import Layout from './components/layout/Layout';
-import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Habits from './pages/Habits';
 import Tasks from './pages/Tasks';
@@ -20,7 +19,9 @@ function App() {
         <AppProvider>
           <Router>
             <Routes>
-              <Route path="/" element={<Landing />} />
+              {/* Redirect root to app */}
+              <Route path="/" element={<Navigate to="/app" replace />} />
+              
               <Route path="/app" element={
                 <AuthGuard>
                   <Layout />
@@ -32,6 +33,9 @@ function App() {
                 <Route path="analytics" element={<Analytics />} />
                 <Route path="settings" element={<Settings />} />
               </Route>
+              
+              {/* Catch all route - redirect to app */}
+              <Route path="*" element={<Navigate to="/app" replace />} />
             </Routes>
             <Toaster 
               position="top-right"

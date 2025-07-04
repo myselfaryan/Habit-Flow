@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuthContext } from '../../contexts/AuthContext';
 import { useSupabaseData } from '../../hooks/useSupabaseData';
 import AuthModal from './AuthModal';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Target } from 'lucide-react';
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -28,25 +28,38 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   if (!isAuthenticated) {
     return (
       <>
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900 flex items-center justify-center">
           <div className="text-center max-w-md mx-auto px-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
+            <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-2xl">
+              <Target className="w-10 h-10 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 dark:from-white dark:via-blue-200 dark:to-purple-200 bg-clip-text text-transparent">
               Welcome to HabitFlow
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mb-8">
-              Please sign in to access your habits and tasks dashboard.
+            <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
+              Transform your daily routines with smart habit tracking and task management.
             </p>
             <button
               onClick={() => setShowAuthModal(true)}
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200"
+              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-xl"
             >
-              Sign In / Sign Up
+              Get Started
             </button>
+            
+            <div className="mt-12 grid grid-cols-3 gap-6 text-center">
+              <div>
+                <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Smart</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Habit Tracking</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Advanced</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Task Management</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Beautiful</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Analytics</div>
+              </div>
+            </div>
           </div>
         </div>
         
