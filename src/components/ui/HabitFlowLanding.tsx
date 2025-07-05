@@ -4,6 +4,7 @@ import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { CheckCircle2, Plus, Target, Activity, ArrowRight, Calendar, TrendingUp, Users, Zap, Shield, Smartphone } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../../contexts/ThemeContext";
 import { cn } from "../../lib/utils";
 
 function ElegantShape({
@@ -13,6 +14,7 @@ function ElegantShape({
     height = 100,
     rotate = 0,
     gradient = "from-white/[0.08]",
+    isDark = true,
 }: {
     className?: string;
     delay?: number;
@@ -20,6 +22,7 @@ function ElegantShape({
     height?: number;
     rotate?: number;
     gradient?: string;
+    isDark?: boolean;
 }) {
     return (
         <motion.div
@@ -61,10 +64,14 @@ function ElegantShape({
                         "absolute inset-0 rounded-full",
                         "bg-gradient-to-r to-transparent",
                         gradient,
-                        "backdrop-blur-[2px] border-2 border-white/[0.15]",
-                        "shadow-[0_8px_32px_0_rgba(255,255,255,0.1)]",
+                        "backdrop-blur-[2px]",
+                        isDark 
+                          ? "border-2 border-white/[0.15] shadow-[0_8px_32px_0_rgba(255,255,255,0.1)]"
+                          : "border-2 border-gray-200/50 shadow-[0_8px_32px_0_rgba(0,0,0,0.1)]",
                         "after:absolute after:inset-0 after:rounded-full",
-                        "after:bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.2),transparent_70%)]"
+                        isDark
+                          ? "after:bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.2),transparent_70%)]"
+                          : "after:bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.1),transparent_70%)]"
                     )}
                 />
             </motion.div>
@@ -85,6 +92,7 @@ interface TodoItemProps {
   onShowActions?: (id: number | null) => void;
   showActions?: number | null;
   className?: string;
+  isDark?: boolean;
 }
 
 function TodoItem({
@@ -93,14 +101,20 @@ function TodoItem({
   onDelete,
   onShowActions,
   showActions,
-  className
+  className,
+  isDark = true
 }: TodoItemProps) {
   const x = useMotionValue(0);
 
   return (
     <motion.div layout className={cn("flex min-h-7 items-center gap-2", className)}>
       <motion.button
-        className="flex h-4 w-4 items-center justify-center rounded-sm border bg-white/10 text-white border-white/20"
+        className={cn(
+          "flex h-4 w-4 items-center justify-center rounded-sm border",
+          isDark 
+            ? "bg-white/10 text-white border-white/20"
+            : "bg-gray-100 text-gray-700 border-gray-300"
+        )}
         style={{ x }}
         onClick={() => {
           onComplete(todo.id);
@@ -150,7 +164,10 @@ function TodoItem({
             animate={{ width: "100%" }}
             exit={{ width: 0 }}
             transition={{ duration: 0.3 }}
-            className="absolute left-0 inline-block h-px bg-white"
+            className={cn(
+              "absolute left-0 inline-block h-px",
+              isDark ? "bg-white" : "bg-gray-700"
+            )}
           />
         )}
       </motion.p>
@@ -169,9 +186,10 @@ interface FeatureCardProps {
   title: string;
   description: string;
   className?: string;
+  isDark?: boolean;
 }
 
-function FeatureCard({ icon, title, description, className }: FeatureCardProps) {
+function FeatureCard({ icon, title, description, className, isDark = true }: FeatureCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -179,8 +197,10 @@ function FeatureCard({ icon, title, description, className }: FeatureCardProps) 
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
       className={cn(
-        "relative p-6 rounded-xl bg-white/[0.03] border border-white/[0.08]",
-        "hover:bg-white/[0.05] transition-all duration-300",
+        "relative p-6 rounded-xl border transition-all duration-300",
+        isDark 
+          ? "bg-white/[0.03] border-white/[0.08] hover:bg-white/[0.05]"
+          : "bg-gray-50/50 border-gray-200/50 hover:bg-gray-100/50",
         className
       )}
     >
@@ -188,15 +208,28 @@ function FeatureCard({ icon, title, description, className }: FeatureCardProps) 
         <div className="p-2 rounded-lg bg-gradient-to-br from-emerald-500/20 to-blue-500/20">
           {icon}
         </div>
-        <h3 className="text-lg font-semibold text-white">{title}</h3>
+        <h3 className={cn(
+          "text-lg font-semibold",
+          isDark ? "text-white" : "text-gray-900"
+        )}>
+          {title}
+        </h3>
       </div>
-      <p className="text-white/60 text-sm leading-relaxed">{description}</p>
+      <p className={cn(
+        "text-sm leading-relaxed",
+        isDark ? "text-white/60" : "text-gray-600"
+      )}>
+        {description}
+      </p>
     </motion.div>
   );
 }
 
 function HabitFlowLanding() {
   const navigate = useNavigate();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  
   const [todos, setTodos] = useState<Todo[]>([
     { id: 1, title: "Morning meditation", completed: true },
     { id: 2, title: "Drink 8 glasses of water", completed: false },
@@ -265,10 +298,20 @@ function HabitFlowLanding() {
   ];
 
   return (
-    <div className="min-h-screen w-full bg-[#030303] overflow-hidden">
+    <div className={cn(
+      "min-h-screen w-full overflow-hidden transition-colors duration-300",
+      isDark 
+        ? "bg-[#030303]" 
+        : "bg-gradient-to-br from-gray-50 via-white to-blue-50"
+    )}>
       {/* Hero Section */}
       <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/[0.05] via-transparent to-blue-500/[0.05] blur-3xl" />
+        <div className={cn(
+          "absolute inset-0 blur-3xl",
+          isDark 
+            ? "bg-gradient-to-br from-emerald-500/[0.05] via-transparent to-blue-500/[0.05]"
+            : "bg-gradient-to-br from-emerald-500/[0.1] via-transparent to-blue-500/[0.1]"
+        )} />
 
         <div className="absolute inset-0 overflow-hidden">
           <ElegantShape
@@ -276,24 +319,27 @@ function HabitFlowLanding() {
             width={600}
             height={140}
             rotate={12}
-            gradient="from-emerald-500/[0.15]"
+            gradient={isDark ? "from-emerald-500/[0.15]" : "from-emerald-500/[0.2]"}
             className="left-[-10%] md:left-[-5%] top-[15%] md:top-[20%]"
+            isDark={isDark}
           />
           <ElegantShape
             delay={0.5}
             width={500}
             height={120}
             rotate={-15}
-            gradient="from-blue-500/[0.15]"
+            gradient={isDark ? "from-blue-500/[0.15]" : "from-blue-500/[0.2]"}
             className="right-[-5%] md:right-[0%] top-[70%] md:top-[75%]"
+            isDark={isDark}
           />
           <ElegantShape
             delay={0.4}
             width={300}
             height={80}
             rotate={-8}
-            gradient="from-purple-500/[0.15]"
+            gradient={isDark ? "from-purple-500/[0.15]" : "from-purple-500/[0.2]"}
             className="left-[5%] md:left-[10%] bottom-[5%] md:bottom-[10%]"
+            isDark={isDark}
           />
         </div>
 
@@ -304,10 +350,18 @@ function HabitFlowLanding() {
               variants={fadeUpVariants}
               initial="hidden"
               animate="visible"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.08] mb-8 md:mb-12"
+              className={cn(
+                "inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-8 md:mb-12",
+                isDark 
+                  ? "bg-white/[0.03] border-white/[0.08]"
+                  : "bg-white/50 border-gray-200/50"
+              )}
             >
               <Activity className="h-4 w-4 text-emerald-400" />
-              <span className="text-sm text-white/60 tracking-wide">
+              <span className={cn(
+                "text-sm tracking-wide",
+                isDark ? "text-white/60" : "text-gray-600"
+              )}>
                 Transform Your Daily Routine
               </span>
             </motion.div>
@@ -319,7 +373,12 @@ function HabitFlowLanding() {
               animate="visible"
             >
               <h1 className="text-5xl sm:text-6xl md:text-8xl font-bold mb-6 md:mb-8 tracking-tight">
-                <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/80">
+                <span className={cn(
+                  "bg-clip-text text-transparent",
+                  isDark 
+                    ? "bg-gradient-to-b from-white to-white/80"
+                    : "bg-gradient-to-b from-gray-900 to-gray-700"
+                )}>
                   Habit
                 </span>
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-300 via-blue-300 to-purple-300">
@@ -334,7 +393,10 @@ function HabitFlowLanding() {
               initial="hidden"
               animate="visible"
             >
-              <p className="text-lg md:text-xl text-white/60 mb-8 leading-relaxed font-light tracking-wide max-w-2xl mx-auto">
+              <p className={cn(
+                "text-lg md:text-xl mb-8 leading-relaxed font-light tracking-wide max-w-2xl mx-auto",
+                isDark ? "text-white/60" : "text-gray-600"
+              )}>
                 Build lasting habits and achieve your goals with our intuitive tracking system. 
                 Turn your daily tasks into powerful routines.
               </p>
@@ -356,7 +418,12 @@ function HabitFlowLanding() {
               </button>
               <button 
                 onClick={handleGetStarted}
-                className="px-8 py-4 border border-white/20 rounded-full text-white/80 font-medium hover:bg-white/5 transition-all duration-300"
+                className={cn(
+                  "px-8 py-4 border rounded-full font-medium transition-all duration-300",
+                  isDark 
+                    ? "border-white/20 text-white/80 hover:bg-white/5"
+                    : "border-gray-300 text-gray-700 hover:bg-gray-100/50"
+                )}
               >
                 Try Web Version
               </button>
@@ -368,11 +435,21 @@ function HabitFlowLanding() {
               variants={fadeUpVariants}
               initial="hidden"
               animate="visible"
-              className="max-w-md mx-auto p-6 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-sm"
+              className={cn(
+                "max-w-md mx-auto p-6 rounded-2xl border backdrop-blur-sm",
+                isDark 
+                  ? "bg-white/[0.03] border-white/[0.08]"
+                  : "bg-white/50 border-gray-200/50"
+              )}
             >
               <div className="flex items-center gap-2 mb-4">
                 <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                <h3 className="text-white font-medium">Today's Habits</h3>
+                <h3 className={cn(
+                  "font-medium",
+                  isDark ? "text-white" : "text-gray-900"
+                )}>
+                  Today's Habits
+                </h3>
               </div>
               <div className="space-y-3">
                 {todos.map((todo) => (
@@ -383,7 +460,8 @@ function HabitFlowLanding() {
                     onDelete={handleDeleteTodo}
                     showActions={showActions}
                     onShowActions={setShowActions}
-                    className="text-white/80"
+                    className={isDark ? "text-white/80" : "text-gray-700"}
+                    isDark={isDark}
                   />
                 ))}
               </div>
@@ -391,7 +469,12 @@ function HabitFlowLanding() {
           </div>
         </div>
 
-        <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-transparent to-[#030303]/80 pointer-events-none" />
+        <div className={cn(
+          "absolute inset-0 bg-gradient-to-t via-transparent pointer-events-none",
+          isDark 
+            ? "from-[#030303] to-[#030303]/80"
+            : "from-gray-50 to-gray-50/80"
+        )} />
       </div>
 
       {/* Features Section */}
@@ -404,13 +487,19 @@ function HabitFlowLanding() {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            <h2 className={cn(
+              "text-4xl md:text-5xl font-bold mb-6",
+              isDark ? "text-white" : "text-gray-900"
+            )}>
               Everything You Need to
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-300 to-blue-300">
                 {" "}Succeed
               </span>
             </h2>
-            <p className="text-white/60 text-lg max-w-2xl mx-auto">
+            <p className={cn(
+              "text-lg max-w-2xl mx-auto",
+              isDark ? "text-white/60" : "text-gray-600"
+            )}>
               Powerful features designed to help you build better habits and achieve your goals faster.
             </p>
           </motion.div>
@@ -422,6 +511,7 @@ function HabitFlowLanding() {
                 icon={feature.icon}
                 title={feature.title}
                 description={feature.description}
+                isDark={isDark}
               />
             ))}
           </div>
@@ -437,10 +527,16 @@ function HabitFlowLanding() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            <h2 className={cn(
+              "text-4xl md:text-5xl font-bold mb-6",
+              isDark ? "text-white" : "text-gray-900"
+            )}>
               Ready to Transform Your Life?
             </h2>
-            <p className="text-white/60 text-lg mb-8 max-w-2xl mx-auto">
+            <p className={cn(
+              "text-lg mb-8 max-w-2xl mx-auto",
+              isDark ? "text-white/60" : "text-gray-600"
+            )}>
               Join thousands of users who have already built lasting habits with HabitFlow.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -454,7 +550,12 @@ function HabitFlowLanding() {
               </button>
               <button 
                 onClick={handleGetStarted}
-                className="px-8 py-4 border border-white/20 rounded-full text-white/80 font-medium hover:bg-white/5 transition-all duration-300"
+                className={cn(
+                  "px-8 py-4 border rounded-full font-medium transition-all duration-300",
+                  isDark 
+                    ? "border-white/20 text-white/80 hover:bg-white/5"
+                    : "border-gray-300 text-gray-700 hover:bg-gray-100/50"
+                )}
               >
                 Try Web Version
               </button>
