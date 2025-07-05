@@ -3,6 +3,7 @@
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { CheckCircle2, Plus, Target, Activity, ArrowRight, Calendar, TrendingUp, Users, Zap, Shield, Smartphone } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { cn } from "../../lib/utils";
 
 function ElegantShape({
@@ -195,6 +196,7 @@ function FeatureCard({ icon, title, description, className }: FeatureCardProps) 
 }
 
 function HabitFlowLanding() {
+  const navigate = useNavigate();
   const [todos, setTodos] = useState<Todo[]>([
     { id: 1, title: "Morning meditation", completed: true },
     { id: 2, title: "Drink 8 glasses of water", completed: false },
@@ -223,6 +225,10 @@ function HabitFlowLanding() {
 
   const handleDeleteTodo = (id: number) => {
     setTodos(prev => prev.filter(todo => todo.id !== id));
+  };
+
+  const handleGetStarted = () => {
+    navigate('/app');
   };
 
   const features = [
@@ -341,12 +347,18 @@ function HabitFlowLanding() {
               animate="visible"
               className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
             >
-              <button className="group relative inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full text-white font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-emerald-500/25">
+              <button 
+                onClick={handleGetStarted}
+                className="group relative inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full text-white font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-emerald-500/25"
+              >
                 Start Your Journey
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="px-8 py-4 border border-white/20 rounded-full text-white/80 font-medium hover:bg-white/5 transition-all duration-300">
-                Watch Demo
+              <button 
+                onClick={handleGetStarted}
+                className="px-8 py-4 border border-white/20 rounded-full text-white/80 font-medium hover:bg-white/5 transition-all duration-300"
+              >
+                Try Web Version
               </button>
             </motion.div>
 
@@ -432,12 +444,18 @@ function HabitFlowLanding() {
               Join thousands of users who have already built lasting habits with HabitFlow.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="group relative inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full text-white font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-emerald-500/25">
-                <Smartphone className="w-5 h-5" />
-                Download App
+              <button 
+                onClick={handleGetStarted}
+                className="group relative inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full text-white font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-emerald-500/25"
+              >
+                <Target className="w-5 h-5" />
+                Get Started
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="px-8 py-4 border border-white/20 rounded-full text-white/80 font-medium hover:bg-white/5 transition-all duration-300">
+              <button 
+                onClick={handleGetStarted}
+                className="px-8 py-4 border border-white/20 rounded-full text-white/80 font-medium hover:bg-white/5 transition-all duration-300"
+              >
                 Try Web Version
               </button>
             </div>
