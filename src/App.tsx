@@ -5,6 +5,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { AppProvider } from './contexts/AppContext';
 import Layout from './components/layout/Layout';
+import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Habits from './pages/Habits';
 import Tasks from './pages/Tasks';
@@ -45,8 +46,8 @@ function App() {
         <AppProvider>
           <Router>
             <Routes>
-              {/* Redirect root to app */}
-              <Route path="/" element={<Navigate to="/app" replace />} />
+              {/* Landing page route */}
+              <Route path="/" element={<Landing />} />
               
               <Route path="/app" element={
                 <AuthGuard>
@@ -60,8 +61,8 @@ function App() {
                 <Route path="settings" element={<Settings />} />
               </Route>
               
-              {/* Catch all route - redirect to app */}
-              <Route path="*" element={<Navigate to="/app" replace />} />
+              {/* Catch all route - redirect to landing */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
             <Toaster 
               position="top-right"
