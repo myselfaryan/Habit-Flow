@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthContext } from '../../contexts/AuthContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import AuthModal from './AuthModal';
 import { Loader2, Target, AlertCircle, CheckCircle, Database } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
@@ -10,6 +11,7 @@ interface AuthGuardProps {
 
 const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const { isAuthenticated, loading: authLoading } = useAuthContext();
+  const { theme } = useTheme();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'error'>('checking');
   const [connectionError, setConnectionError] = useState<string>('');
@@ -164,9 +166,17 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   if (!isAuthenticated) {
     return (
       <>
-        {/* Dark background */}
-        <div className="min-h-screen bg-[#030303] flex items-center justify-center">
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/[0.05] via-transparent to-blue-500/[0.05] blur-3xl" />
+        {/* Theme-aware background */}
+        <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
+          theme === 'dark' 
+            ? 'bg-[#030303]' 
+            : 'bg-gradient-to-br from-gray-50 via-white to-blue-50'
+        }`}>
+          <div className={`absolute inset-0 blur-3xl ${
+            theme === 'dark'
+              ? 'bg-gradient-to-br from-emerald-500/[0.05] via-transparent to-blue-500/[0.05]'
+              : 'bg-gradient-to-br from-emerald-500/[0.1] via-transparent to-blue-500/[0.1]'
+          }`} />
         </div>
         
         <AuthModal 
