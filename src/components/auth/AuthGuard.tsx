@@ -14,7 +14,6 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const { isAuthenticated, loading: authLoading } = useAuthContext();
   const { theme } = useTheme();
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [showLandingPage, setShowLandingPage] = useState(true);
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'error'>('checking');
   const [connectionError, setConnectionError] = useState<string>('');
 
@@ -50,14 +49,14 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
 
   // Handle auth modal opening from landing page
   const handleAuthModalOpen = () => {
-    setShowLandingPage(false);
+    console.log('Opening auth modal');
     setShowAuthModal(true);
   };
 
   // Handle auth modal closing - return to landing page
   const handleAuthModalClose = () => {
+    console.log('Closing auth modal');
     setShowAuthModal(false);
-    setShowLandingPage(true);
   };
 
   // Show loading spinner while checking auth and connection
@@ -183,7 +182,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   }
 
   // If not authenticated, show landing page or auth modal
-  if (showLandingPage && !showAuthModal) {
+  if (!showAuthModal) {
     return <Landing onGetStarted={handleAuthModalOpen} />;
   }
 
