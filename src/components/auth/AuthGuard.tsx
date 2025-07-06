@@ -49,13 +49,13 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
 
   // Handle auth modal opening from landing page
   const handleAuthModalOpen = () => {
-    console.log('Opening auth modal');
+    console.log('Opening auth modal from landing page');
     setShowAuthModal(true);
   };
 
   // Handle auth modal closing - return to landing page
   const handleAuthModalClose = () => {
-    console.log('Closing auth modal');
+    console.log('Closing auth modal, returning to landing page');
     setShowAuthModal(false);
   };
 
@@ -181,31 +181,18 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
     return <>{children}</>;
   }
 
-  // If not authenticated, show landing page or auth modal
-  if (!showAuthModal) {
-    return <Landing onGetStarted={handleAuthModalOpen} />;
-  }
-
-  // Show auth modal with proper background
+  // If not authenticated, show landing page with auth modal overlay when needed
   return (
-    <>
-      <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
-        theme === 'dark' 
-          ? 'bg-[#030303]' 
-          : 'bg-gradient-to-br from-gray-50 via-white to-blue-50'
-      }`}>
-        <div className={`absolute inset-0 blur-3xl ${
-          theme === 'dark'
-            ? 'bg-gradient-to-br from-emerald-500/[0.05] via-transparent to-blue-500/[0.05]'
-            : 'bg-gradient-to-br from-emerald-500/[0.1] via-transparent to-blue-500/[0.1]'
-        }`} />
-      </div>
+    <div className="relative">
+      {/* Always show landing page as base */}
+      <Landing onGetStarted={handleAuthModalOpen} />
       
+      {/* Show auth modal as overlay when requested */}
       <AuthModal 
         isOpen={showAuthModal} 
         onClose={handleAuthModalClose} 
       />
-    </>
+    </div>
   );
 };
 

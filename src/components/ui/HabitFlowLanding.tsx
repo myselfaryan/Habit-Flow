@@ -266,6 +266,8 @@ function HabitFlowLanding({ onGetStarted }: HabitFlowLandingProps) {
     console.log('Get Started clicked, calling onGetStarted');
     if (onGetStarted) {
       onGetStarted();
+    } else {
+      console.warn('onGetStarted callback not provided');
     }
   };
 
