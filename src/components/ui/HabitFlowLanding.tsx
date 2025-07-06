@@ -263,6 +263,7 @@ function HabitFlowLanding({ onGetStarted }: HabitFlowLandingProps) {
   };
 
   const handleGetStarted = () => {
+    console.log('Get Started clicked, calling onGetStarted');
     if (onGetStarted) {
       onGetStarted();
     }
