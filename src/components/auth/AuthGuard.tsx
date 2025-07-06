@@ -13,7 +13,7 @@ interface AuthGuardProps {
 const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const { isAuthenticated, loading: authLoading } = useAuthContext();
   const { theme } = useTheme();
-  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [currentView, setCurrentView] = useState<'landing' | 'auth'>('landing');
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'error'>('checking');
   const [connectionError, setConnectionError] = useState<string>('');
 
@@ -47,16 +47,16 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
     testConnection();
   }, [isSupabaseConfigured]);
 
-  // Handle auth modal opening from landing page
-  const handleAuthModalOpen = () => {
-    console.log('Opening auth modal from landing page');
-    setShowAuthModal(true);
+  // Handle navigation to auth page
+  const handleShowAuth = () => {
+    console.log('Navigating to auth page');
+    setCurrentView('auth');
   };
 
-  // Handle auth modal closing - return to landing page
-  const handleAuthModalClose = () => {
-    console.log('Closing auth modal, returning to landing page');
-    setShowAuthModal(false);
+  // Handle navigation back to landing page
+  const handleBackToLanding = () => {
+    console.log('Navigating back to landing page');
+    setCurrentView('landing');
   };
 
   // Show loading spinner while checking auth and connection
@@ -181,16 +181,27 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
     return <>{children}</>;
   }
 
-  // If not authenticated, show landing page with auth modal overlay when needed
+  // If not authenticated, show landing page or auth page based on current view
+  if (currentView === 'landing') {
+    return <Landing onGetStarted={handleShowAuth} />;
+  }
+
+  // Show auth page
   return (
-    <div className="relative">
-      {/* Always show landing page as base */}
-      <Landing onGetStarted={handleAuthModalOpen} />
+    <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
+      theme === 'dark' 
+        ? 'bg-[#030303]' 
+        : 'bg-gradient-to-br from-gray-50 via-white to-blue-50'
+    }`}>
+      <div className={`absolute inset-0 blur-3xl ${
+        theme === 'dark'
+          ? 'bg-gradient-to-br from-emerald-500/[0.05] via-transparent to-blue-500/[0.05]'
+          : 'bg-gradient-to-br from-emerald-500/[0.1] via-transparent to-blue-500/[0.1]'
+      }`} />
       
-      {/* Show auth modal as overlay when requested */}
       <AuthModal 
-        isOpen={showAuthModal} 
-        onClose={handleAuthModalClose} 
+        isOpen={true} 
+        onClose={handleBackToLanding} 
       />
     </div>
   );

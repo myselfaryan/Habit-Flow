@@ -28,22 +28,36 @@ const Habits: React.FC = () => {
   const categories = Array.from(new Set(habits.map(habit => habit.category)));
 
   const handleMarkComplete = async (habitId: string) => {
-    // Check if habit is already completed today
-    if (isHabitCompletedToday(habitId, habitEntries)) {
-      toast.error('Habit already marked complete for today');
-      return;
-    }
-
     try {
-      await addHabitEntry({
+      // Check if habit is already completed today
+      if (isHabitCompletedToday(habitEntries, habitId)) {
+        toast.error('Habit already marked complete for today');
+        return;
+      }
+
+      // Add habit entry
+      const result = await addHabitEntry({
         habitId,
         date: new Date(),
         count: 1,
       });
-      toast.success('Habit marked as complete! 🎉');
-    } catch (error) {
+
+      if (result) {
+        toast.success('Habit marked as complete! 🎉');
+      } else {
+        throw new Error('Failed to create habit entry');
+      }
+    } catch (error: any) {
       console.error('Error marking habit complete:', error);
-      toast.error('Failed to mark habit as complete');
+      
+      // Handle specific error cases
+      if (error.message === 'HABIT_ALREADY_COMPLETED_TODAY') {
+        toast.error('Habit already marked complete for today');
+      } else if (error.message?.includes('duplicate key')) {
+        toast.error('Habit already marked complete for today');
+      } else {
+        toast.error('Failed to mark habit as complete. Please try again.');
+      }
     }
   };
 
@@ -58,10 +72,27 @@ const Habits: React.FC = () => {
   };
 
   const handleSaveHabit = async (habitData: Omit<Habit, 'id' | 'createdAt'>) => {
-    if (editingHabit) {
-      await updateHabit(editingHabit.id, habitData);
-    } else {
-      await addHabit(habitData);
+    try {
+      if (editingHabit) {
+        const result = await updateHabit(editingHabit.id, habitData);
+        if (result) {
+          toast.success('Habit updated successfully!');
+        } else {
+          throw new Error('Failed to update habit');
+        }
+      } else {
+        const result = await addHabit(habitData);
+        if (result) {
+          toast.success('Habit created successfully!');
+        } else {
+          throw new Error('Failed to create habit');
+        }
+      }
+      setShowHabitModal(false);
+      setEditingHabit(null);
+    } catch (error: any) {
+      console.error('Error saving habit:', error);
+      toast.error(error.message || 'Failed to save habit. Please try again.');
     }
   };
 

@@ -281,7 +281,7 @@ export const useSupabaseData = () => {
 
   const toggleTask = async (id: string) => {
     const task = tasks.find(t => t.id === id);
-    if (!task) return;
+    if (!task) return null;
 
     const completed = !task.completed;
     const completedAt = completed ? new Date() : undefined;
