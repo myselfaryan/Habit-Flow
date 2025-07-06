@@ -3,7 +3,6 @@
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { CheckCircle2, Plus, Target, Activity, ArrowRight, Calendar, TrendingUp, Users, Zap, Shield, Smartphone } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../contexts/ThemeContext";
 import { cn } from "../../lib/utils";
 
@@ -225,8 +224,11 @@ function FeatureCard({ icon, title, description, className, isDark = true }: Fea
   );
 }
 
-function HabitFlowLanding() {
-  const navigate = useNavigate();
+interface HabitFlowLandingProps {
+  onGetStarted?: () => void;
+}
+
+function HabitFlowLanding({ onGetStarted }: HabitFlowLandingProps) {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   
@@ -261,7 +263,9 @@ function HabitFlowLanding() {
   };
 
   const handleGetStarted = () => {
-    navigate('/app');
+    if (onGetStarted) {
+      onGetStarted();
+    }
   };
 
   const features = [
@@ -425,7 +429,7 @@ function HabitFlowLanding() {
                     : "border-gray-300 text-gray-700 hover:bg-gray-100/50"
                 )}
               >
-                Try Web Version
+                Get Started
               </button>
             </motion.div>
 
@@ -557,7 +561,7 @@ function HabitFlowLanding() {
                     : "border-gray-300 text-gray-700 hover:bg-gray-100/50"
                 )}
               >
-                Try Web Version
+                Get Started
               </button>
             </div>
           </motion.div>

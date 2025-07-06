@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuthContext } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import AuthModal from './AuthModal';
+import Landing from '../../pages/Landing';
 import { Loader2, Target, AlertCircle, CheckCircle, Database } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
@@ -13,6 +14,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const { isAuthenticated, loading: authLoading } = useAuthContext();
   const { theme } = useTheme();
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showLandingPage, setShowLandingPage] = useState(true);
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'error'>('checking');
   const [connectionError, setConnectionError] = useState<string>('');
 
@@ -46,17 +48,26 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
     testConnection();
   }, [isSupabaseConfigured]);
 
-  // Auto-show auth modal when not authenticated and connection is ready
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated && connectionStatus === 'connected') {
-      setShowAuthModal(true);
-    }
-  }, [authLoading, isAuthenticated, connectionStatus]);
+  // Handle auth modal opening from landing page
+  const handleAuthModalOpen = () => {
+    setShowLandingPage(false);
+    setShowAuthModal(true);
+  };
+
+  // Handle auth modal closing - return to landing page
+  const handleAuthModalClose = () => {
+    setShowAuthModal(false);
+    setShowLandingPage(true);
+  };
 
   // Show loading spinner while checking auth and connection
   if (authLoading || connectionStatus === 'checking') {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center">
+      <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
+        theme === 'dark' 
+          ? 'bg-[#030303]' 
+          : 'bg-gradient-to-br from-gray-50 via-white to-blue-50'
+      }`}>
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-400">
@@ -70,7 +81,11 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   // Show configuration error if Supabase is not configured or connection failed
   if (!isSupabaseConfigured || connectionStatus === 'error') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900 flex items-center justify-center">
+      <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
+        theme === 'dark' 
+          ? 'bg-[#030303]' 
+          : 'bg-gradient-to-br from-gray-50 via-white to-blue-50'
+      }`}>
         <div className="text-center max-w-lg mx-auto px-6">
           <div className="w-20 h-20 bg-gradient-to-br from-red-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-2xl">
             <AlertCircle className="w-10 h-10 text-white" />
@@ -162,33 +177,37 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
     );
   }
 
-  // Show auth modal if not authenticated (no welcome screen)
-  if (!isAuthenticated) {
-    return (
-      <>
-        {/* Theme-aware background */}
-        <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
-          theme === 'dark' 
-            ? 'bg-[#030303]' 
-            : 'bg-gradient-to-br from-gray-50 via-white to-blue-50'
-        }`}>
-          <div className={`absolute inset-0 blur-3xl ${
-            theme === 'dark'
-              ? 'bg-gradient-to-br from-emerald-500/[0.05] via-transparent to-blue-500/[0.05]'
-              : 'bg-gradient-to-br from-emerald-500/[0.1] via-transparent to-blue-500/[0.1]'
-          }`} />
-        </div>
-        
-        <AuthModal 
-          isOpen={showAuthModal} 
-          onClose={() => setShowAuthModal(false)} 
-        />
-      </>
-    );
+  // If authenticated, render the protected children
+  if (isAuthenticated) {
+    return <>{children}</>;
   }
 
-  // Render children if authenticated and connected
-  return <>{children}</>;
+  // If not authenticated, show landing page or auth modal
+  if (showLandingPage && !showAuthModal) {
+    return <Landing onGetStarted={handleAuthModalOpen} />;
+  }
+
+  // Show auth modal with proper background
+  return (
+    <>
+      <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
+        theme === 'dark' 
+          ? 'bg-[#030303]' 
+          : 'bg-gradient-to-br from-gray-50 via-white to-blue-50'
+      }`}>
+        <div className={`absolute inset-0 blur-3xl ${
+          theme === 'dark'
+            ? 'bg-gradient-to-br from-emerald-500/[0.05] via-transparent to-blue-500/[0.05]'
+            : 'bg-gradient-to-br from-emerald-500/[0.1] via-transparent to-blue-500/[0.1]'
+        }`} />
+      </div>
+      
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={handleAuthModalClose} 
+      />
+    </>
+  );
 };
 
 export default AuthGuard;
