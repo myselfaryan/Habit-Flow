@@ -1,10 +1,4 @@
-    }
-  };
-
-  const handleMarkCompleteInternal = async (habitId: string) => {
-    try {
-      const result = await addHabitEntry({
-import React from 'react';
+    import React from 'react';
 import { motion } from 'framer-motion';
 import { Target, Flame, Calendar, CheckCircle2 } from 'lucide-react';
 import { Habit, HabitEntry } from '../../types';
@@ -25,7 +19,17 @@ const HabitCard: React.FC<HabitCardProps> = ({ habit, habitEntries, onMarkComple
   const completionRate = getHabitCompletionRate(habitEntries, habit.id);
   const isCompletedToday = isHabitCompletedToday(habitEntries, habit.id);
 
+  const handleMarkCompleteInternal = async (habitId: string) => {
+    try {
+      const result = await addHabitEntry({});
+      await onMarkComplete(habitId);
+    } catch (error: any) {
+      console.error('Error in handleMarkComplete:', error);
+      toast.error('Failed to mark habit as complete');
       throw error; // Re-throw to be handled by parent
+    }
+  };
+
   return (
     <Card hover onClick={() => onEdit(habit)} className="p-6">
       <div className="flex items-start justify-between mb-4">
@@ -85,17 +89,14 @@ const HabitCard: React.FC<HabitCardProps> = ({ habit, habitEntries, onMarkComple
           onClick={(e) => {
             e.stopPropagation();
             onMarkComplete(habit.id);
-    try {
           }}
           disabled={isCompletedToday}
         >
           {isCompletedToday ? 'Completed Today' : 'Mark Complete'}
         </Button>
-      await onMarkComplete(habitId);
       </div>
-    } catch (error: any) {
+    </Card>
+  );
 };
-      console.error('Error in handleMarkComplete:', error);
 
-      toast.error('Failed to mark habit as complete');
 export default HabitCard;
