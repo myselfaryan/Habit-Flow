@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthContext } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
-import AuthModal from './AuthModal';
-import Landing from '../../pages/Landing';
 import { Loader2, Target, AlertCircle, CheckCircle, Database } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
@@ -13,7 +11,6 @@ interface AuthGuardProps {
 const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const { isAuthenticated, loading: authLoading } = useAuthContext();
   const { theme } = useTheme();
-  const [currentView, setCurrentView] = useState<'landing' | 'auth'>('landing');
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'error'>('checking');
   const [connectionError, setConnectionError] = useState<string>('');
 
@@ -46,18 +43,6 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
 
     testConnection();
   }, [isSupabaseConfigured]);
-
-  // Handle navigation to auth page
-  const handleShowAuth = () => {
-    console.log('Navigating to auth page');
-    setCurrentView('auth');
-  };
-
-  // Handle navigation back to landing page
-  const handleBackToLanding = () => {
-    console.log('Navigating back to landing page');
-    setCurrentView('landing');
-  };
 
   // Show loading spinner while checking auth and connection
   if (authLoading || connectionStatus === 'checking') {
@@ -177,35 +162,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   }
 
   // If authenticated, render the protected children
-  if (isAuthenticated) {
-    return <>{children}</>;
-  }
-
-  // If not authenticated, show landing page or auth page based on current view
-  if (currentView === 'landing') {
-    console.log('Rendering Landing with handleShowAuth callback');
-    return <Landing onGetStarted={handleShowAuth} />;
-  }
-
-  // Show auth page
-  return (
-    <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
-      theme === 'dark' 
-        ? 'bg-[#030303]' 
-        : 'bg-gradient-to-br from-gray-50 via-white to-blue-50'
-    }`}>
-      <div className={`absolute inset-0 blur-3xl ${
-        theme === 'dark'
-          ? 'bg-gradient-to-br from-emerald-500/[0.05] via-transparent to-blue-500/[0.05]'
-          : 'bg-gradient-to-br from-emerald-500/[0.1] via-transparent to-blue-500/[0.1]'
-      }`} />
-      
-      <AuthModal 
-        isOpen={true} 
-        onClose={handleBackToLanding} 
-      />
-    </div>
-  );
+  return <>{children}</>;
 };
 
 export default AuthGuard;

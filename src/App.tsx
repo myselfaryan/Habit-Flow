@@ -1,11 +1,12 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { AppProvider } from './contexts/AppContext';
 import Layout from './components/layout/Layout';
 import Landing from './pages/Landing';
+import Auth from './pages/Auth';
 import Dashboard from './pages/Dashboard';
 import Habits from './pages/Habits';
 import Tasks from './pages/Tasks';
@@ -48,6 +49,9 @@ function App() {
             <Routes>
               {/* Landing page route */}
               <Route path="/" element={<Landing />} />
+              
+              {/* Auth page route */}
+              <Route path="/auth" element={<Auth />} />
               
               <Route path="/app" element={
                 <AuthGuard>

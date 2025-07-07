@@ -232,7 +232,7 @@ const Analytics: React.FC = () => {
                       cx="50%"
                       cy="50%"
                       labelLine={false}
-                      label={renderCustomLabel}
+                      label={false}
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
@@ -241,6 +241,11 @@ const Analytics: React.FC = () => {
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
+                    <Legend 
+                      verticalAlign="bottom" 
+                      height={36}
+                      formatter={(value, entry) => `${value}: ${entry.payload.value}`}
+                    />
                     <Tooltip 
                       contentStyle={{ 
                         backgroundColor: 'rgba(255, 255, 255, 0.95)',
