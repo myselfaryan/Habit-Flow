@@ -183,6 +183,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
 
   // If not authenticated, show landing page or auth page based on current view
   if (currentView === 'landing') {
+    console.log('Rendering Landing with handleShowAuth callback');
     return <Landing onGetStarted={handleShowAuth} />;
   }
 
