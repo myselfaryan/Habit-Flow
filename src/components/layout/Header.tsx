@@ -19,6 +19,20 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle, onSidebarToggle, sidebarC
   const location = useLocation();
   const [showUserMenu, setShowUserMenu] = useState(false);
 
+  // Close dropdown when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (showUserMenu && !target.closest('[data-user-menu]')) {
+        setShowUserMenu(false);
+      }
+    };
+
+    if (showUserMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showUserMenu]);
   const getPageTitle = () => {
     switch (location.pathname) {
       case '/app':
@@ -144,14 +158,6 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle, onSidebarToggle, sidebarC
           </div>
         </div>
       </div>
-
-      {/* Click outside to close user menu */}
-      {showUserMenu && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setShowUserMenu(false)}
-        />
-      )}
     </header>
   );
 };
