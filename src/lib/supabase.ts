@@ -1,1 +1,10 @@
-{"code";"rate-limited","message";"You have hit the rate limit. Please upgrade to keep chatting.","providerLimitHit";false,"isRetryable";true}
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://your-project-id.supabase.co'
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'your-anon-key-here'
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+export default supabase
+
+export type { User, Session } from '@supabase/supabase-js'
