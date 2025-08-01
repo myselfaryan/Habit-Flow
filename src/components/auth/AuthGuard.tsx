@@ -17,6 +17,11 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   // Check if Supabase is configured
   const isSupabaseConfigured = !!(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY);
 
+  // Debug authentication state
+  useEffect(() => {
+    console.log('AuthGuard - isAuthenticated:', isAuthenticated, 'authLoading:', authLoading);
+  }, [isAuthenticated, authLoading]);
+
   // Test Supabase connection
   useEffect(() => {
     const testConnection = async () => {

@@ -62,13 +62,32 @@ export const signIn = async (email: string, password: string) => {
 };
 
 export const signOut = async () => {
-  if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-    // For development without Supabase, just clear any local state
+  try {
+    // Always clear local storage first
     localStorage.clear();
-    return { error: null };
+    sessionStorage.clear();
+    
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+      // For development without Supabase, just return success
+      return { error: null };
+    }
+    
+    // Sign out from Supabase
+    const { error } = await supabase.auth.signOut();
+    
+    // Clear storage again after Supabase signout
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    return { error };
+  } catch (error) {
+    console.error('Sign out error:', error);
+    // Even if there's an error, clear local storage
+    localStorage.clear();
+    sessionStorage.clear();
+    return { error };
   }
-  
-  const { error } = await supabase.auth.signOut();
+};
   return { error };
 };
 
