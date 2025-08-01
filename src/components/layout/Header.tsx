@@ -51,10 +51,14 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle, onSidebarToggle, sidebarC
   };
 
   const handleSignOut = async () => {
+    setShowUserMenu(false); // Close the dropdown first
     try {
       await signOut();
       toast.success('Signed out successfully');
+      // Force navigation to landing page after sign out
+      window.location.href = '/';
     } catch (error) {
+      console.error('Sign out error:', error);
       toast.error('Error signing out');
     }
   };

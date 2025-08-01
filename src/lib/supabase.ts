@@ -62,6 +62,12 @@ export const signIn = async (email: string, password: string) => {
 };
 
 export const signOut = async () => {
+  if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+    // For development without Supabase, just clear any local state
+    localStorage.clear();
+    return { error: null };
+  }
+  
   const { error } = await supabase.auth.signOut();
   return { error };
 };
