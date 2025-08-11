@@ -1,10 +1,56 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
+import { Database } from './database.types';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://your-project-id.supabase.co'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'your-anon-key-here'
+// Get environment variables
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Validate environment variables
+if (!supabaseUrl) {
+  console.error('Missing VITE_SUPABASE_URL environment variable');
+}
 
-export default supabase
+if (!supabaseAnonKey) {
+  console.error('Missing VITE_SUPABASE_ANON_KEY environment variable');
+}
 
-export type { User, Session } from '@supabase/supabase-js'
+// Create Supabase client with proper configuration
+export const supabase = createClient<Database>(
+  supabaseUrl || '',
+  supabaseAnonKey || '',
+  {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true,
+      flowType: 'pkce',
+      storage: window?.localStorage,
+    },
+    global: {
+      headers: {
+        'X-Client-Info': 'habitflow-web',
+      },
+    },
+  }
+);
+
+// Export types for convenience
+export type { User, Session } from '@supabase/supabase-js';
+
+// Test connection function
+export const testSupabaseConnection = async () => {
+  try {
+    const { data, error } = await supabase.from('habits').select('count').limit(1);
+    if (error) {
+      console.error('Supabase connection test failed:', error);
+      return false;
+    }
+    console.log('Supabase connection successful');
+    return true;
+  } catch (error) {
+    console.error('Supabase connection error:', error);
+    return false;
+  }
+};
+
+export default supabase;
