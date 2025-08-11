@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
-import { signIn, signUp } from '../../lib/supabase';
+import { supabase } from '../../lib/supabase';
 import Button from '../ui/Button';
 import toast from 'react-hot-toast';
 
@@ -35,11 +35,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
     try {
       if (isSignUp) {
-        const { error } = await signUp(email, password);
+        const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
         toast.success('Account created! Please check your email to verify your account.');
       } else {
-        const { error } = await signIn(email, password);
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success('Welcome back!');
         onClose();
